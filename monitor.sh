@@ -20,14 +20,13 @@ RED_CMD=$(echo -en "${ESCAPE}${RED}")
 
 # LOOP FOREVER MONITORING
 while(true); do
-    mongo --port $PORT --eval "db.stats()" > /dev/null 2>&1  # Test connection with simple ccommand
+    mongosh --port $PORT --eval "db.stats()" > /dev/null 2>&1  # Test connection with simple ccommand
     RESULT=$?  # Returns 0 if mongo connected
 
     if [ $RESULT -ne 0 ]; then
         echo "${RED_CMD}Down${RESET_CMD}"
     else
-        mongo --port $PORT --quiet --eval "
-            rs.slaveOk();
+        mongosh --port $PORT --quiet --eval "
             print('Connected to MongoDB ' + db.version());
             db = db.getSiblingDB('mside');
 
@@ -40,6 +39,7 @@ while(true); do
                         line += '${BLUE}Primary';
                     } else if (db.isMaster().secondary) {
                         line += '${GREEN}Secondary';
+                        db.getMongo().setReadPref('secondary')
                     } else {
                         line += '${PURPLE}Not Initialised';
                         ready = false;
@@ -48,7 +48,7 @@ while(true); do
                     line += '${RESET_CMD}'
                     
                     if (ready) {
-                        line += ' - Docs: ' + db.bookings.countDocuments({})
+                        line += ' - Docs count: ' + db.bookings.countDocuments({})
                     }
 
                     print(line);

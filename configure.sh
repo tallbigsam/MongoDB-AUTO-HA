@@ -1,5 +1,5 @@
 #!/bin/bash  
-mongo --port 27000 --eval '
+mongosh --port 27000 --eval '
     rs.initiate(
         {_id: "TestRS", members: [
             {_id: 0, host: "localhost:27000"},

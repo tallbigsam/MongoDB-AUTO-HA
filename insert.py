@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 import pymongo, sys, random, uuid, time
 from datetime import datetime
+from uuid import uuid4
 
 SEEDLIST_URL = 'mongodb://localhost:27000,localhost:27001,localhost:27002/?replicaSet=TestRS&retryWrites={retry}&retryReads={retry}'
+# SEEDLIST_URL = 'mongodb://localhost:27000,localhost:27001,localhost:27002/?replicaSet=TestRS&retryWrites={retry}&retryReads={retry}&w=majority&wTimeoutMS=1000'
 retry = True if ((len(sys.argv) > 1) and (sys.argv[1].strip().lower() == 'retry')) else False
 connection = pymongo.MongoClient(SEEDLIST_URL.format(retry=str(retry).lower()), retryWrites=retry , retryReads=retry)
 connect_problem = False
@@ -13,7 +15,7 @@ while True:
         connection['mside']['bookings'].insert_one({
             'user_id': 'Jane_Doe',
             'location':'US',
-            'booking_number': uuid.uuid1(),
+            'booking_number': uuid4(),
             'booking_cost': random.randint(1,100),
             'checkin_date': datetime(2022, 5, 18),
             'checkout_date': datetime(2022, 5, 21)
