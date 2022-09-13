@@ -6,7 +6,7 @@ from uuid import uuid4
 SEEDLIST_URL = 'mongodb://localhost:27000,localhost:27001,localhost:27002/?replicaSet=TestRS&retryWrites={retry}&retryReads={retry}'
 # SEEDLIST_URL = 'mongodb://localhost:27000,localhost:27001,localhost:27002/?replicaSet=TestRS&retryWrites={retry}&retryReads={retry}&w=majority&wTimeoutMS=1000'
 retry = True if ((len(sys.argv) > 1) and (sys.argv[1].strip().lower() == 'retry')) else False
-connection = pymongo.MongoClient(SEEDLIST_URL.format(retry=str(retry).lower()), retryWrites=retry , retryReads=retry)
+connection = pymongo.MongoClient(SEEDLIST_URL.format(retry=str(retry).lower()), retryWrites=retry , retryReads=retry, uuidRepresentation='standard')
 connect_problem = False
 print(f'\nInserting records continuously with retryable reads & writes set to {str(retry).upper()}....\n')
 
